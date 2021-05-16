@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="5dp"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="5dp"
+        app:cardBackgroundColor="@color/browser_actions_bg_grey"
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:padding="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/list_title"
+                android:text="Title"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/list_user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Id"
+                android:textStyle="italic"
+                android:paddingTop="5dp"
+                android:textSize="20sp"
+                android:layout_below="@id/list_title"/>
+            <TextView
+                android:id="@+id/list_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:textStyle="italic"
+                android:paddingTop="5dp"
+                android:textSize="20sp"
+                android:layout_below="@id/list_user_id"/>
+
+            <TextView
+                android:id="@+id/list_dateAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textStyle="italic"
+                android:paddingTop="5dp"
+                android:textSize="18sp"
+                android:layout_below="@id/list_password"/>
+<!--            <TableRow-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:layout_alignBottom="@id/list_note_dateAdd"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_marginTop="15dp">-->
+<!--                <Button-->
+<!--                    android:id="@+id/editButton"-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_marginRight="15dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    android:background="@android:drawable/ic_menu_edit" />-->
+<!--                <Button-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    android:id="@+id/deleteButton"-->
+<!--                    android:background="@android:drawable/ic_delete"/>-->
+
+<!--            </TableRow>-->
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
