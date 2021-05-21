@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,7 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = FirebaseDatabase.getInstance().getReference().child("Holder");
-        currentUserId = mAuth.getCurrentUser().getUid();
+
+        if(mAuth.getCurrentUser()!=null) {
+            currentUserId = mAuth.getCurrentUser().getUid();
+        }
 
         CryptoLight.init(this);
 
@@ -91,17 +95,24 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //String id = currentUserId;
         if(currentUser==null){
             sendToLogin();
         }
         else{
-            mUser.child(id).addValueEventListener(new ValueEventListener() {
+            mUser.child(currentUserId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
                         fab.setVisibility(View.GONE);
-                        sendToList();
+                        if (!isActivePass()) {
+                            Intent intent = new Intent(MainActivity.this, PinActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else{
+                            sendToList();
+                        }
                     }
                 }
 
@@ -111,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 
     private void sendToLogin() {
@@ -148,12 +158,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        SharedPreferences.Editor editor = getSharedPreferences("password_manager", MODE_PRIVATE).edit();
+        editor.putBoolean("isActivePin", false);
+        editor.apply();
+
+    }
+
+    private boolean isPass() {
+        SharedPreferences prefs = getSharedPreferences("password_manager", MODE_PRIVATE);
+        return prefs.getBoolean("isPin", false);
+    }
+
+    private boolean isActivePass() {
+        SharedPreferences prefs = getSharedPreferences("password_manager", MODE_PRIVATE);
+        return prefs.getBoolean("isActivePin", false);
+    }
+
+
     private void sendToList() {
         Fragment fragment = null;
         fragment = new ListFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.frameLayout,fragment).commit();
+                .replace(R.id.frameLayout,fragment).commitAllowingStateLoss();
     }
 
     private void saveToDb(String name,String userId,String password) {

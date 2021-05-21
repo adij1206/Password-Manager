@@ -1,6 +1,7 @@
 package com.aditya.passwordmanager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ListFragment extends Fragment {
 
@@ -69,9 +72,33 @@ public class ListFragment extends Fragment {
                     @Override
                     protected void onBindViewHolder(@NonNull ListViewHolder holder, final int position, @NonNull Saver model) {
                        holder.title.setText(model.getName());
-                       holder.userId.setText(model.getUserId());
-                       holder.password.setText(CryptoLight.decrypt(getContext(),model.getPassword()));
-                       holder.date.setText(model.getDate());
+                       holder.userId.setText("UserId: " + model.getUserId());
+                       holder.password.setText("Password: " + CryptoLight.decrypt(getContext(),model.getPassword()));
+                       holder.date.setText("Date: " + model.getDate());
+
+                       holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View view) {
+                               userRef.child(model.getName()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                   @Override
+                                   public void onComplete(@NonNull Task<Void> task) {
+                                       if(task.isSuccessful()){
+                                           Toast.makeText(getContext(), "SuccessFully Deleted", Toast.LENGTH_SHORT).show();
+                                       }
+                                       else{
+                                           Toast.makeText(getContext(), "Error:"+task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                       }
+                                   }
+                               });
+                           }
+                       });
+
+                       holder.editBtn.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View view) {
+                               createUpdatePopup(model.getName());
+                           }
+                       });
                     }
 
                     @NonNull
@@ -93,6 +120,15 @@ public class ListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("password_manager", MODE_PRIVATE).edit();
+        editor.putBoolean("isActivePin", false);
+        editor.apply();
     }
 
     private void createPopup() {
@@ -122,6 +158,48 @@ public class ListFragment extends Fragment {
         });
     }
 
+    private void createUpdatePopup(String title){
+        builder = new AlertDialog.Builder(getContext());
+        View view = getLayoutInflater().inflate(R.layout.update_popup,null);
+
+        TextView name = (TextView) view.findViewById(R.id.update_popup_add_item_name);
+        EditText userId = (EditText) view.findViewById(R.id.update_popup_add_item_userid);
+        EditText password = (EditText) view.findViewById(R.id.update_popup_add_item_password);
+        Button saveBtn = (Button) view.findViewById(R.id.update_popup_add_save_btn);
+        name.setText(title);
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"save Pressed",Toast.LENGTH_SHORT).show();
+                //String n = name.getText().toString();
+                String i = userId.getText().toString();
+                String p = password.getText().toString();
+                updateToDb(i,p,title);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void updateToDb( String userId, String password,String title) {
+        Calendar calForDate = Calendar.getInstance();
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        String currentDate = currentDateFormat.format(calForDate.getTime());
+        String encryptPassword = CryptoLight.encrypt(getContext(),password);
+        childUser = userRef.child(title);
+
+        HashMap<String, Object> messageInfoMap = new HashMap<>();
+        messageInfoMap.put("name",title);
+        messageInfoMap.put("userId",userId);
+        messageInfoMap.put("password",encryptPassword);
+        messageInfoMap.put("date",currentDate);
+
+        childUser.updateChildren(messageInfoMap);
+    }
+
     private void saveToDb(String name, String userId, String password) {
         Calendar calForDate = Calendar.getInstance();
         SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
@@ -139,7 +217,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(getContext(), "Added SuccessFully", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Added SuccessFully", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -149,6 +227,7 @@ public class ListFragment extends Fragment {
 
     public class ListViewHolder extends RecyclerView.ViewHolder {
         TextView title,userId,password,date;
+        Button editBtn,deleteBtn;
         public ListViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -156,6 +235,9 @@ public class ListFragment extends Fragment {
             userId = itemView.findViewById(R.id.list_user_id);
             password = itemView.findViewById(R.id.list_password);
             date = itemView.findViewById(R.id.list_dateAdd);
+            editBtn = itemView.findViewById(R.id.editButton);
+            deleteBtn = itemView.findViewById(R.id.deleteButton);
+
         }
     }
 }

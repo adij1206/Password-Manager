@@ -61,5 +61,17 @@
         android:textAlignment="center"
         />
 
+    <Button
+        android:id="@+id/pin_btn"
+        android:text="SET PIN"
+        android:textSize="18sp"
+        android:layout_below="@+id/already_register_account_link"
+        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
 
 </RelativeLayout>

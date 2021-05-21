@@ -49,30 +49,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date"
-                android:textStyle="italic"
                 android:paddingTop="5dp"
                 android:textSize="18sp"
                 android:layout_below="@id/list_password"/>
-<!--            <TableRow-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_alignParentRight="true"-->
-<!--                android:layout_alignBottom="@id/list_note_dateAdd"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:layout_marginTop="15dp">-->
-<!--                <Button-->
-<!--                    android:id="@+id/editButton"-->
-<!--                    android:layout_width="30dp"-->
-<!--                    android:layout_marginRight="15dp"-->
-<!--                    android:layout_height="30dp"-->
-<!--                    android:background="@android:drawable/ic_menu_edit" />-->
-<!--                <Button-->
-<!--                    android:layout_width="30dp"-->
-<!--                    android:layout_height="30dp"-->
-<!--                    android:id="@+id/deleteButton"-->
-<!--                    android:background="@android:drawable/ic_delete"/>-->
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/list_dateAdd"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp">
+                <Button
+                    android:id="@+id/editButton"
+                    android:layout_width="30dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="30dp"
+                    android:background="@android:drawable/ic_menu_edit" />
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/deleteButton"
+                    android:background="@android:drawable/ic_delete"/>
 
-<!--            </TableRow>-->
+            </TableRow>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
